@@ -1,0 +1,30 @@
+clasterizar transacciones txmins,
+leer cosas: datos continuos (aplicar)
+leer artículos de datos categóricos;
+entender que distintos métodos hay,
+que métricas y que datasets
+empezar a implementar cosas,
+modelos de lenguaje para clasterizar continuo
+
+
+1º parte: aprender clastering variables continuas: ISLR, otro  elements og statistial learning 
+https://hastie.su.domains/ElemStatLearn/
+https://www.statlearning.com/
+
+segunda sesion
+!!! empezar a ver el clustering de los datos transaccionales txmins
+https://arpi.unipi.it/bitstream/11568/888327/5/KDD2017_manuscript.pdf
+categoricoooo, pero las transaccionales son especiales
+code:: https://github.com/riccotti/TX-Means
+nombra otros métodos y se compara, con lo que me tengo que comparar yo
+problema setting
+
+se compara con https://link.springer.com/chapter/10.1007/3-540-45681-3_15 tkmins
+
+tareas: leer articulo para profundizar y ver dos distintos
+fijarse cual es el problema;
+intentarentender los algoritmos empezar por el tk
+apuntar con qien se compara
+Empiezan hacer las pruebas, descargarse esos datasets, todos los datasets tenerlos a mano
+como compara los dos métodos, cuales son las medidas que utiliza para medir la calidad de la clasterizacion entre ellos el tiempo
+tienen un programa que generaba conjuntos de datos sintéticos, tienes el control de decir cuales son los grupos por lo que el algoritmo debería adaptarse a esos grupos
