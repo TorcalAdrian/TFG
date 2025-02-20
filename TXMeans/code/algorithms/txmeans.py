@@ -5,7 +5,7 @@ import numpy as np
 from scipy.special import binom
 from collections import defaultdict
 
-from .util import *
+from util import *
 
 __author__ = 'Riccardo Guidotti'
 
@@ -654,8 +654,9 @@ class TXmeans:
 
 
     def _first_iter(self, baskets):
+
         if self.nbaskets > self.random_sample:
-            sample_baskets_keys = set(random.sample(list(baskets.keys()), self.random_sample))
+            sample_baskets_keys = set(random.sample(baskets.keys(), self.random_sample))
             sample_baskets = dict()
             for b in sample_baskets_keys:
                 sample_baskets[b] = baskets[b]
@@ -973,7 +974,7 @@ class TXmeans:
                 for j in clusters_to_be_merged[i]:
                     if j not in clusters_already_merged:
                         cluster1 = self.clustering[j]['cluster']
-                        for b, basket in cluster1.items():
+                        for b, basket in cluster1.iteritems():
                             cluster0[b] = basket
                         clusters_already_merged.add(j)
                 clusters_already_merged.add(i)
@@ -1002,7 +1003,7 @@ class TXmeans:
     def _find_medioids(self):
         res = self.clustering
         for label, cluster in enumerate(res):
-            d = np.inf
+            d = np.infty
             idx_med = 0
             for bid, bitarr in cluster['cluster'].items():
                 d_tmp = jaccard_bitarray(bitarr, cluster['centroid'])

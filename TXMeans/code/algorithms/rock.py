@@ -3,7 +3,7 @@ import random
 
 from heapq import *
 
-from .util import *
+from util import *
 
 __author__ = 'Riccardo Guidotti'
 
@@ -93,7 +93,7 @@ class Rock:
     def _run(self, baskets):
 
         if self.nbaskets > self.random_sample:
-            sample_baskets_keys = set(random.sample(list(baskets.keys()), self.random_sample))
+            sample_baskets_keys = set(random.sample(baskets.keys(), self.random_sample))
             sample_baskets = dict()
             for b in sample_baskets_keys:
                 sample_baskets[b] = baskets[b]
@@ -260,7 +260,7 @@ class Rock:
 
         clusters_sample = dict()
 
-        for cid, cluster in clusters.items():
+        for cid, cluster in clusters.iteritems():
             if len(cluster) > 1000:
                 ss = sample_size(len(cluster), 0.05, conf_level=0.95, prob=0.5)
                 clusters_sample[cid] = random.sample(cluster, ss)
@@ -268,7 +268,7 @@ class Rock:
                 clusters_sample[cid] = cluster
 
         clusters_new = defaultdict(list)
-        for bid, basket in baskets.items():
+        for bid, basket in baskets.iteritems():
 
             best_cid = None
             max_nbr_count = -float('infinity')

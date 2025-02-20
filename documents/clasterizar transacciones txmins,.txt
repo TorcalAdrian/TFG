@@ -28,3 +28,13 @@ apuntar con qien se compara
 Empiezan hacer las pruebas, descargarse esos datasets, todos los datasets tenerlos a mano
 como compara los dos métodos, cuales son las medidas que utiliza para medir la calidad de la clasterizacion entre ellos el tiempo
 tienen un programa que generaba conjuntos de datos sintéticos, tienes el control de decir cuales son los grupos por lo que el algoritmo debería adaptarse a esos grupos
+https://radimrehurek.com/gensim/
+work to vect
+intentar usar gensim sacar enmedings entrenar un modelo de lenguaje
+
+coger el dataset y procesar cada item cmo una palabra, entonces cada dato estará representado como un vector
+se puede coger la media de todos los vecotores que representan una transacción y que será el centroide 
+luego usar kmedias
+luego NMI
+para sacar la media se pueden normalizar
+probar las distintas convinaciones

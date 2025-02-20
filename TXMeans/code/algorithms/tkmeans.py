@@ -2,7 +2,7 @@ import random
 
 from heapq import *
 
-from .util import *
+from util import *
 
 __author__ = 'Riccardo Guidotti'
 
@@ -187,7 +187,7 @@ class TKMeans:
 
     def _run(self, baskets):
 
-        selected_seeds = random.sample(list(baskets.keys()), self.k)
+        selected_seeds = random.sample(baskets.keys(), self.k)
 
         centroids = dict()
         for s in selected_seeds:
@@ -234,8 +234,8 @@ class TKMeans:
             if len(res) > 0:
                 clustering_res.append({
                     'cluster': res,
-                    'centroid': centroids[cluster_centroid[list(res.keys())[0]]],
-                    'centroid_id': cluster_centroid[list(res.keys())[0]]
+                    'centroid': centroids[cluster_centroid[res.keys()[0]]],
+                    'centroid_id': cluster_centroid[res.keys()[0]]
                 })
             else:
                 clustering_res.append({

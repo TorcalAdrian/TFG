@@ -2,7 +2,6 @@ import copy
 from heapq import *
 from bitarray import bitarray
 from collections import defaultdict
-from .util import*
 
 __author__ = 'Riccardo Guidotti'
 

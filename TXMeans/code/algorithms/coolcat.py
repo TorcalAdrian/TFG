@@ -2,7 +2,6 @@ import copy
 import random
 import numpy as np
 from collections import defaultdict
-from .util import *
 
 __author__ = 'Riccardo Guidotti'
 
@@ -18,8 +17,6 @@ def entropy_cluster(cluster_info, N):
         if p == 0 or p == 1.0:
             entropy_item = 0.0
         else:
-            # print("p:", p)
-            # print("1-p:", 1-p)
             entropy_item = - ((p * np.log2(p)) + ((1-p) * np.log2(1-p)))
         entropy_cluster_val += entropy_item
 
@@ -27,7 +24,7 @@ def entropy_cluster(cluster_info, N):
 
 
 def entropy(clusters_entropy):
-    return np.sum(list(clusters_entropy.values()))
+    return np.sum(clusters_entropy.values())
 
 
 def cluster_info_init(basket, nitems):
@@ -117,7 +114,7 @@ class Coolcat:
 
         self.iter_count += 1
 
-        baskets_sample_keys = random.sample(list(baskets.keys()), self.random_sample)
+        baskets_sample_keys = random.sample(baskets.keys(), self.random_sample)
 
         b1b2_dist = defaultdict(dict)
 

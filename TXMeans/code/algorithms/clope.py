@@ -3,7 +3,6 @@ import random
 
 from bitarray import bitarray
 from collections import defaultdict
-from .util import *
 
 __author__ = 'Riccardo Guidotti'
 
@@ -14,8 +13,6 @@ def delta_profit(cluster_info, basket, r):
         N_new = 1
         S_new = basket.count()
         W_new = basket.count()
-        if W_new == 0:
-            return 0
         return 1.0 * S_new * N_new / W_new ** r
 
     N_new = cluster_info['N'] + 1
@@ -73,16 +70,16 @@ class Clope:
         self.nitems = nitems
         self.r = r
 
-
+        # print 'allocation'
         clusters, clusters_reverse, clusters_info = self._allocation(baskets)
 
-        # for cid, cluster in clusters.items():
+        # for cid, cluster in clusters.iteritems():
         #     print cid, cluster, clusters_info[cid]
 
         # print 'refinement'
         clusters = self._refinement(baskets, clusters, clusters_reverse, clusters_info)
 
-        for cid, cluster in clusters.items():
+        for cid, cluster in clusters.iteritems():
             self.clustering.append({
                 'cluster': cluster,
                 'centroid': None
@@ -97,7 +94,7 @@ class Clope:
         clusters_info = defaultdict(dict)
         clusters_reverse = dict()
 
-        first_element = random.choice(list(baskets.keys()))
+        first_element = random.choice(baskets.keys())
 
         clusters[self.cluster_id][first_element] = baskets[first_element]
         clusters_info[self.cluster_id] = cluster_info_init(baskets[first_element], self.nbaskets, self.nitems)
@@ -108,7 +105,7 @@ class Clope:
 
         self.cluster_id += 1
 
-        for bid, basket in baskets.items():
+        for bid, basket in baskets.iteritems():
 
             if bid == first_element:
                 continue
@@ -168,7 +165,7 @@ class Clope:
             self.iter_count += 1
             moved = False
 
-            for bid, basket in baskets.items():
+            for bid, basket in baskets.iteritems():
 
                 # print bid, len(clusters)
 

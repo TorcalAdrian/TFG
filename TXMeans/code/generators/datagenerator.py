@@ -2,12 +2,12 @@ import os
 import numpy as np
 import subprocess
 import shutil
-from .datamanager import *
+from datamanager import *
 
 __author__ = 'Riccardo Guidotti'
 
 def generate_syntetic_data1(nclus, ntrans, nitems, avg_tlen,
-                            min_tlen=-float('inf'), max_tlen=float('inf'), pattern_cor_level=1.0):
+                            min_tlen=-float('infinity'), max_tlen=float('infinity'), pattern_cor_level=1.0):
     """
     nclus = 4 # number of clusters
     ntrans = 16 # number of transcations
@@ -21,14 +21,14 @@ def generate_syntetic_data1(nclus, ntrans, nitems, avg_tlen,
     if pattern_cor_level == 1.0 every cluster contains only items assigned to it
     if pattern_cor_level == 0.0 every cluster contains only items assigned to another"""
 
-    if 1.0*nitems//nclus < avg_tlen:
-        print ('Attention!!! nitems/nclus < avg_tlen', 1.0*nitems//nclus, avg_tlen)
+    if 1.0*nitems/nclus < avg_tlen:
+        print 'Attention!!! nitems/nclus < avg_tlen', 1.0*nitems/nclus, avg_tlen
         return None
 
     # init transactions
     # divido le transazioni in nclus
-    trans = list(range(0, ntrans))
-    trans_clusters = [trans[x:x+ntrans//nclus] for x in range(0, ntrans, ntrans//nclus)]
+    trans = range(0, ntrans)
+    trans_clusters = [trans[x:x+ntrans/nclus] for x in range(0, ntrans, ntrans/nclus)]
     if len(trans_clusters) > nclus:
         for tid, index in zip(trans_clusters[nclus], range(0, len(trans_clusters[nclus]))):
             trans_clusters[index].append(tid)
@@ -36,9 +36,8 @@ def generate_syntetic_data1(nclus, ntrans, nitems, avg_tlen,
 
     # init items
     # associo ai cluster gli item che li caratterizzano
-    items = list(range(0, nitems))
-    items_clusters = [items[x:x+nitems//nclus] for x in range(0, nitems, nitems//nclus)]
-
+    items = range(0, nitems)
+    items_clusters = [items[x:x+nitems/nclus] for x in range(0, nitems, nitems/nclus)]
     if len(items_clusters) > nclus:
         for tid, index in zip(items_clusters[nclus], range(0, len(items_clusters[nclus]))):
             items_clusters[index].append(tid)
@@ -60,7 +59,7 @@ def generate_syntetic_data1(nclus, ntrans, nitems, avg_tlen,
             p_items[tid] = p_in_cluster
 
         for tid in cluster:
-            tlen = int(max(min(np.random.poisson(avg_tlen), max_tlen), min_tlen))
+            tlen = np.max([np.min([np.random.poisson(avg_tlen), max_tlen]), min_tlen])
             basket = np.random.choice(items, tlen, replace=False, p=p_items).tolist()
             baskets.append((list(basket), cluster_label))
         cluster_label += 1
@@ -89,14 +88,13 @@ def generate_syntetic_data2(nclus, nsub, nnosub, ntrans, nitems, avg_tlen,
     if nclus == nnosub and nsub == 0 same effect of generate_syntetic_data1"""
 
     if 1.0*nitems/((nclus-nnosub)*nsub + nnosub) < avg_tlen:
-        print ('Attention!!! nitems/nclus < avg_tlen', 1.0*nitems/((nclus-nnosub)*nsub + nnosub), avg_tlen)
+        print 'Attention!!! nitems/nclus < avg_tlen', 1.0*nitems/((nclus-nnosub)*nsub + nnosub), avg_tlen
         return None
 
     # init transactions
     # divido le transazioni in nclus
-    trans = list(range(0, ntrans))
-    trans_clusters = [trans[x:x+ntrans//nclus] for x in range(0, ntrans, ntrans//nclus)]
-
+    trans = range(0, ntrans)
+    trans_clusters = [trans[x:x+ntrans/nclus] for x in range(0, ntrans, ntrans/nclus)]
     if len(trans_clusters) > nclus:
         for tid, index in zip(trans_clusters[nclus], range(0, len(trans_clusters[nclus]))):
             trans_clusters[index].append(tid)
@@ -108,15 +106,15 @@ def generate_syntetic_data2(nclus, nsub, nnosub, ntrans, nitems, avg_tlen,
     for cluster in trans_clusters:
         clen = len(cluster)
         if cluster_label < nclus-nnosub:
-            trans_sub_clusters[cluster_label] = [cluster[x:x+clen//nsub] for x in range(0, clen, clen//nsub)]
+            trans_sub_clusters[cluster_label] = [cluster[x:x+clen/nsub] for x in range(0, clen, clen/nsub)]
         else:
             trans_sub_clusters[cluster_label] = [cluster]
         cluster_label += 1
 
     # init items
     # associo ai cluster gli item che li caratterizzano
-    items = list(range(0, nitems))
-    items_clusters = [items[x:x+nitems//nclus] for x in range(0, nitems, nitems//nclus)]
+    items = range(0, nitems)
+    items_clusters = [items[x:x+nitems/nclus] for x in range(0, nitems, nitems/nclus)]
     if len(items_clusters) > nclus:
         for tid, index in zip(items_clusters[nclus], range(0, len(items_clusters[nclus]))):
             items_clusters[index].append(tid)
@@ -154,7 +152,7 @@ def generate_syntetic_data2(nclus, nsub, nnosub, ntrans, nitems, avg_tlen,
                 tsublen = tlen
                 if clid >= nclus-nnosub:
                     tsublen = tlen * 2
-                basket = np.random.choice(items, int(tsublen), replace=False, p=p_items).tolist()
+                basket = np.random.choice(items, tsublen, replace=False, p=p_items).tolist()
                 baskets.append((list(basket), cluster_label))
             cluster_label += 1
 

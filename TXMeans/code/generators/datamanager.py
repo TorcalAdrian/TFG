@@ -34,9 +34,9 @@ def read_uci_data(filename, class_index=0, delimiter=',', missing_symbol='?', he
     df = pd.read_csv(filename, skipinitialspace=True)
     index_mode = dict()
 
-    for k, index in zip(df.columns, range(len(df.columns))):
-        df[k] = df[k].replace(missing_symbol, np.nan)
-        mode_value = df[k].mode()[0]
+    for k, index in zip(df.columns, range(0, len(df.columns))):
+        df[k] = df[k].replace('?', np.nan)
+        mode_value = mode(df[k])[0][0]
         df[k] = df[k].fillna(mode_value)
         index_mode[index] = mode_value
 

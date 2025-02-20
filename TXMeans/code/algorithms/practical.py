@@ -1,6 +1,6 @@
 import random
 import datetime
-from .util import *
+from util import *
 
 __author__ = 'Riccardo Guidotti'
 
@@ -35,7 +35,7 @@ def calculate_quality(quality_dict, nbaskets):
 
 def calculate_quality_dict(clusters_info, w_m_D, nbaskets, nitems):
     quality_dict = dict()
-    for cid, cluster_info in clusters_info.items():
+    for cid, cluster_info in clusters_info.iteritems():
         val = calculate_quality_cluster(cluster_info, w_m_D, nbaskets, nitems)
         quality_dict[cid] = val
     return quality_dict
@@ -102,7 +102,7 @@ class Practical:
         clusters = self._refinement(baskets, clusters, clusters_info,
                                     clusters_quality_dict, clusters_reverse)
 
-        for cid, cluster in clusters.items():
+        for cid, cluster in clusters.iteritems():
             self.clustering.append({
                 'cluster': cluster,
                 'centroid': None
@@ -120,7 +120,7 @@ class Practical:
         clusters = defaultdict(dict)
         clusters_info = defaultdict(dict)
 
-        first_element = random.choice(list(baskets.keys()))
+        first_element = random.choice(baskets.keys())
 
         clusters[self.cluster_id][first_element] = baskets[first_element]
         clusters_info[self.cluster_id] = cluster_info_init(baskets[first_element], self.nbaskets, self.nitems)
@@ -129,7 +129,7 @@ class Practical:
 
         clusters_quality_dict = calculate_quality_dict(clusters_info, self.w_m_D, self.nbaskets, self.nitems)
 
-        for bid, basket in baskets.items():
+        for bid, basket in baskets.iteritems():
             # print bid, len(clusters)
 
             if bid == first_element:
@@ -180,7 +180,7 @@ class Practical:
                 clusters_quality_dict[best_cluster_id] = best_cluster_quality
 
         clusters_reverse = dict()
-        for cid, cluster in clusters.items():
+        for cid, cluster in clusters.iteritems():
             for bid in cluster:
                 clusters_reverse[bid] = cid
 
@@ -195,7 +195,7 @@ class Practical:
 
             cur_quality = calculate_quality(clusters_quality_dict, self.nbaskets)
 
-            for bid, basket in baskets.items():
+            for bid, basket in baskets.iteritems():
 
                 # print bid, len(clusters)
 
