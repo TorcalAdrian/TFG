@@ -38,3 +38,5 @@ luego usar kmedias
 luego NMI
 para sacar la media se pueden normalizar
 probar las distintas convinaciones
+
+lucks-kdds
