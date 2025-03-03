@@ -67,7 +67,7 @@ def run_kmeans_clustering(file_path, vector_size, window, epochs):
 
     # Save results to a CSV file
     results_df = pd.DataFrame(results)
-    results_folder = "../results"
+    results_folder = "../results_raw"
     os.makedirs(results_folder, exist_ok=True)
     result_file_path = os.path.join(results_folder, f"results_{os.path.basename(file_path)}.csv")
 

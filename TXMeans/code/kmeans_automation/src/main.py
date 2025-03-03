@@ -11,12 +11,13 @@ def main():
     epochs_settings = [5, 10, 20]
 
 
-    settings_combinations = product(window_settings, vector_size_settings, epochs_settings)
+
 
 
 
     for filename in os.listdir(dataset_folder):
         if filename.endswith('.data'):
+            settings_combinations = product(window_settings, vector_size_settings, epochs_settings)
             file_path = os.path.join(dataset_folder, filename)
             for window, vector_size, epochs in settings_combinations:
                 run_kmeans_clustering(file_path, vector_size, window, epochs)

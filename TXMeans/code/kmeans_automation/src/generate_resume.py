@@ -7,19 +7,15 @@ def get_top_30_executions(file_path):
     return top_30
 
 def main():
-    results_folder = '../results'
-    summary_file = os.path.join(results_folder, 'resume.csv')
-    
-    all_top_30 = []
+    results_folder = '../results_raw'
+    resume_folder = '../results_resume'
     
     for file_name in os.listdir(results_folder):
         if file_name.endswith('.csv'):
             file_path = os.path.join(results_folder, file_name)
             top_30 = get_top_30_executions(file_path)
-            all_top_30.append(top_30)
-    
-    summary_df = pd.concat(all_top_30)
-    summary_df.to_csv(summary_file, index=False)
+            output_file = os.path.join(resume_folder, f'resume_{file_name}')
+            top_30.to_csv(output_file, index=False)
 
 if __name__ == "__main__":
     main()
