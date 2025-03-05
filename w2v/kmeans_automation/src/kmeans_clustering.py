@@ -7,6 +7,7 @@ from sklearn.preprocessing import normalize
 import datetime
 from tabulate import tabulate
 import os
+import time
 
 def load_data(file_path):
     df = pd.read_csv(file_path, sep=';')
@@ -19,9 +20,12 @@ def preprocess_data(df):
     df['processed_text'] = df['processed_text'].apply(lambda x: x.split())
     return df
 
-def train_word2vec_model(sentences, vector_size=200, window=10, epochs=10):
+def train_word2vec_model(sentences, vector_size, window, epochs):
+    start_time = time.time()
     model = Word2Vec(sentences=sentences, vector_size=vector_size, window=window, min_count=1, workers=4, sg=1, epochs=epochs)
-    return model
+    end_time = time.time()
+    training_time = end_time - start_time
+    return model, training_time
 
 def get_average_vector(words, model_dw):
     vectors = []
@@ -37,13 +41,14 @@ def run_kmeans_clustering(file_path, vector_size, window, epochs):
     results = []
     df = load_data(file_path)
     df = preprocess_data(df)
-    n_clusters_settings = [2, 4, 8, 10, 16, 20, 50, 100]
+    n_clusters_settings = [2, 4, 8, 16, 20, 50]
 
-    model_dw = train_word2vec_model(df['processed_text'], vector_size=vector_size, window=window, epochs=epochs)
+    model_dw, training_time = train_word2vec_model(df['processed_text'], vector_size=vector_size, window=window, epochs=epochs)
     X = np.array([get_average_vector(text, model_dw) for text in df['processed_text']])
 
     for n_clusters in n_clusters_settings:
-        for i in range(3): 
+        iteration_results = []
+        for i in range(10): 
             start_time = datetime.datetime.now()
             kmeans = KMeans(n_clusters=n_clusters)
             kmeans.fit(X)
@@ -54,7 +59,7 @@ def run_kmeans_clustering(file_path, vector_size, window, epochs):
             real_labels_numeric = df['CLASS']
             nmi = normalized_mutual_info_score(real_labels_numeric, y_kmeans)
 
-            results.append({
+            iteration_results.append({
                 "file": os.path.basename(file_path).replace('.data', ''),
                 "n_clusters": n_clusters,
                 "vector_size": vector_size,
@@ -62,12 +67,23 @@ def run_kmeans_clustering(file_path, vector_size, window, epochs):
                 "epochs": epochs,
                 "NMI": nmi,
                 "running_time": running_time,
+                "training_time": training_time,
                 "iteration": i + 1  
             })
 
+        nmi_scores = [result["NMI"] for result in iteration_results]
+        median_nmi = np.median(nmi_scores)
+        median_index = np.argsort(np.abs(np.array(nmi_scores) - median_nmi))[0]
+        median_result = iteration_results[median_index].copy()
+        median_result["iteration"] = "median"
+
+        # Add all iteration results and the median result to the final results
+        results.extend(iteration_results)
+        results.append(median_result)
+
     # Save results to a CSV file
     results_df = pd.DataFrame(results)
-    results_folder = "../results_raw"
+    results_folder = "../results/results_raw_new"
     os.makedirs(results_folder, exist_ok=True)
     result_file_path = os.path.join(results_folder, f"results_{os.path.basename(file_path)}.csv")
 

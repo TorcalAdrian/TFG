@@ -3,16 +3,12 @@ from itertools import product
 from kmeans_clustering import run_kmeans_clustering
 
 def main():
-    dataset_folder = "../datasets"
+    dataset_folder = "../../dataset_v2"
 
     # Define the settings for window, vector size, epochs, and n_clusters
     window_settings = [5, 10]
-    vector_size_settings = [50, 100, 200, 500]
-    epochs_settings = [5, 10, 20]
-
-
-
-
+    vector_size_settings = [50, 100, 200, 400]
+    epochs_settings = [5, 10]
 
     for filename in os.listdir(dataset_folder):
         if filename.endswith('.data'):

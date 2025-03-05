@@ -3,7 +3,8 @@ import pandas as pd
 
 def get_top_30_executions(file_path):
     df = pd.read_csv(file_path)
-    top_30 = df.nlargest(30, 'NMI').sort_values(by='NMI', ascending=False)
+    df_median = df[df['iteration'] == 'median']
+    top_30 = df_median.nlargest(30, 'NMI').sort_values(by='NMI', ascending=False)
     return top_30
 
 def main():
