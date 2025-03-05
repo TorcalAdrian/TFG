@@ -14,7 +14,6 @@ def main():
 
 
 
-
     for filename in os.listdir(dataset_folder):
         if filename.endswith('.data'):
             settings_combinations = product(window_settings, vector_size_settings, epochs_settings)

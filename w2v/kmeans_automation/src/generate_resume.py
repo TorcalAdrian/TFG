@@ -3,12 +3,15 @@ import pandas as pd
 
 def get_top_30_executions(file_path):
     df = pd.read_csv(file_path)
-    top_30 = df.nlargest(30, 'NMI')
+    top_30 = df.nlargest(30, 'NMI').sort_values(by='NMI', ascending=False)
     return top_30
 
 def main():
     results_folder = '../results_raw'
     resume_folder = '../results_resume'
+    
+    if not os.path.exists(resume_folder):
+        os.makedirs(resume_folder)
     
     for file_name in os.listdir(results_folder):
         if file_name.endswith('.csv'):
