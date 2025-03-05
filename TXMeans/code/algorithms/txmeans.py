@@ -5,7 +5,7 @@ import numpy as np
 from scipy.special import binom
 from collections import defaultdict
 
-from util import *
+from .util import *
 
 __author__ = 'Riccardo Guidotti'
 

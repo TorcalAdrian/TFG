@@ -2,7 +2,7 @@ import os
 import numpy as np
 import subprocess
 import shutil
-from datamanager import *
+from .datamanager import *
 
 __author__ = 'Riccardo Guidotti'
 
@@ -22,7 +22,7 @@ def generate_syntetic_data1(nclus, ntrans, nitems, avg_tlen,
     if pattern_cor_level == 0.0 every cluster contains only items assigned to another"""
 
     if 1.0*nitems/nclus < avg_tlen:
-        print 'Attention!!! nitems/nclus < avg_tlen', 1.0*nitems/nclus, avg_tlen
+        print ('Attention!!! nitems/nclus < avg_tlen', 1.0*nitems/nclus, avg_tlen)
         return None
 
     # init transactions
@@ -88,7 +88,7 @@ def generate_syntetic_data2(nclus, nsub, nnosub, ntrans, nitems, avg_tlen,
     if nclus == nnosub and nsub == 0 same effect of generate_syntetic_data1"""
 
     if 1.0*nitems/((nclus-nnosub)*nsub + nnosub) < avg_tlen:
-        print 'Attention!!! nitems/nclus < avg_tlen', 1.0*nitems/((nclus-nnosub)*nsub + nnosub), avg_tlen
+        print ('Attention!!! nitems/nclus < avg_tlen', 1.0*nitems/((nclus-nnosub)*nsub + nnosub), avg_tlen)
         return None
 
     # init transactions
