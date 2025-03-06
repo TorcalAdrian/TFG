@@ -8,7 +8,7 @@ def get_top_30_executions(file_path):
     return top_30
 
 def main():
-    results_folder = '../results_raw'
+    results_folder = '../results/results_raw_new'
     resume_folder = '../results_resume'
     
     if not os.path.exists(resume_folder):
