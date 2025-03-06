@@ -3,7 +3,7 @@ from itertools import product
 from kmeans_clustering import run_kmeans_clustering
 
 def main():
-    dataset_folder = "../../dataset_v2"
+    dataset_folder = "../../dataset_pp"
 
     # Define the settings for window, vector size, epochs, and n_clusters
     window_settings = [5, 10]
