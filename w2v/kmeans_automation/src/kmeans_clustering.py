@@ -41,7 +41,7 @@ def run_kmeans_clustering(file_path, vector_size, window, epochs):
     results = []
     df = load_data(file_path)
     df = preprocess_data(df)
-    n_clusters_settings = [2, 4, 8, 16, 20, 50]
+    n_clusters_settings = [2, 4, 6, 8]
 
     model_dw, training_time = train_word2vec_model(df['processed_text'], vector_size=vector_size, window=window, epochs=epochs)
     X = np.array([get_average_vector(text, model_dw) for text in df['processed_text']])

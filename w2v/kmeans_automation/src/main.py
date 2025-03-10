@@ -8,7 +8,7 @@ def main():
     # Define the settings for window, vector size, epochs, and n_clusters
     window_settings = [5, 10]
     vector_size_settings = [50, 100, 200, 400]
-    epochs_settings = [5, 10]
+    epochs_settings = [5, 10, 20]
 
     for filename in os.listdir(dataset_folder):
         print(f"Processing file: {filename}")
