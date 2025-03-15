@@ -1,0 +1,16 @@
+import os
+from txmeans_clustering import run_txmeans_clustering
+
+def main():
+    dataset_folder = "../../dataset_pp"
+
+
+    for filename in os.listdir(dataset_folder):
+        print(f"Processing file: {filename}")
+        if filename.endswith('.data'):
+            file_path = os.path.join(dataset_folder, filename)
+            run_txmeans_clustering(file_path)
+            
+
+if __name__ == "__main__":
+    main()
