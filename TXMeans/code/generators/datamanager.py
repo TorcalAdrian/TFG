@@ -39,6 +39,7 @@ def read_uci_data(filename, class_index=0, delimiter=',', missing_symbol='?', he
         mode_value = mode(df[k])[0][0]
         df[k] = df[k].fillna(mode_value)
         index_mode[index] = mode_value
+    
 
     baskets = list()
 

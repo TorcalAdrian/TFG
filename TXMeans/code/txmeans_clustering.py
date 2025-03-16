@@ -2,13 +2,21 @@ from algorithms.txmeans import *
 from generators.datamanager import *
 from validation.validation_measures import *
 
+def main():
 
+    path = '../dataset/'
+    dataset_name = 'mushrooms.csv'
 
-def run_txmeans_clustering(file_path):
     txmeans = TXmeans()
+    
+    filename = path + dataset_name
     class_index = 0
     skipcolumnsindex = set()
-    baskets_real_labels, maps = read_uci_data(file_path, class_index=class_index, skipcolumnsindex=skipcolumnsindex)
+    
+    baskets_real_labels, maps = read_uci_data(filename, class_index=class_index, skipcolumnsindex=skipcolumnsindex)
+
+    print( dataset_name, len(baskets_real_labels))
+
     baskets_list = list()
     real_labels = list()
     count = 0
@@ -40,6 +48,12 @@ def run_txmeans_clustering(file_path):
         for bid in cluster['cluster']:
             pred_labels[bid] = label
             baskets_clusters.append(cluster_list)
-    normalized_mutual_info_score(real_labels, pred_labels)
 
+    print('delta_k', delta_k(real_labels, pred_labels))
+    print('normalized_mutual_info_score', normalized_mutual_info_score(real_labels, pred_labels))
+    print('purity', purity(real_labels, pred_labels))
+    print('running_time', running_time)
+    
 
+if __name__ == "__main__":
+    main()
