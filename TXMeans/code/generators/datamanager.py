@@ -33,13 +33,15 @@ def write_syntetic_data(filename, baskets):
 def read_uci_data(filename, class_index=0, delimiter=',', missing_symbol='?', header=True, skipcolumnsindex=set()):
     df = pd.read_csv(filename, skipinitialspace=True)
     index_mode = dict()
+    df['EVENTS'] = df['EVENTS'].str.replace(' ', ';')
+
 
     for k, index in zip(df.columns, range(0, len(df.columns))):
         df[k] = df[k].replace('?', np.nan)
         mode_value = mode(df[k])[0][0]
         df[k] = df[k].fillna(mode_value)
         index_mode[index] = mode_value
-    
+
 
     baskets = list()
 
