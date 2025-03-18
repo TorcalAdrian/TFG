@@ -2,7 +2,7 @@ import random
 
 from heapq import *
 
-from util import *
+from .util import *
 
 __author__ = 'Riccardo Guidotti'
 
