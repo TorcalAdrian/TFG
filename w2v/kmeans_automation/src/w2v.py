@@ -100,7 +100,7 @@ def main():
     # epochs_settings = [5, 10, 20]
     window_settings = [5]
     vector_size_settings = [200]
-    epochs_settings = [5]
+    epochs_settings = [10]
 
     for filename in os.listdir(dataset_folder):
         print(f"Processing file: {filename}")
