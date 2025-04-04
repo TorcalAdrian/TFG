@@ -1,0 +1,4 @@
+# Ignorar todos los archivos dentro de dataset_db_raw
+datasets/*
+env/*
+w2v/models/*
