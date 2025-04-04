@@ -40,3 +40,36 @@ para sacar la media se pueden normalizar
 probar las distintas convinaciones
 
 lucks-kdds
+
+## I was going to use scikit directly, but I saw this post
+## kudos for him https://towardsdatascience.com/k-means-8x-faster-27x-lower-error-than-scikit-learns-in-25-lines-eaedc7a3a0c8
+import faiss
+def cluster_data(method, vectors, num_clusters, normalize):
+    dim = vectors[0].shape[0]
+    if normalize:
+        actual_vectors = np.array([preprocessing.normalize(x.reshape(1,dim)).reshape(dim,) for x in vectors])
+    else:
+        actual_vectors = np.array([x for x in vectors])
+
+    if method =='k_means':
+        clusters = faiss.Kmeans(d=actual_vectors.shape[1], k=num_clusters, niter=2000, nredo=10)
+        clusters.train(actual_vectors)
+    elif method == 'hdbscan':
+        clusters = hdb
+Carlos Bobed Lisbona
+20:16
+https://github.com/sid-unizar/PartMining/blob/main/sid/PartMining/DatabaseSplitter.py
+
+
+trans_embs = np.stack([getMeanVectorLine(line, item_embs, model.dictionary) for line in itemIterator])
+
+trans_embs = np.stack([getMeanVectorLine(line, model.word_vectors, model.dictionary) for line in itemIterator])
+def getMeanVectorLine(l,embeddings,key_to_index):
+    ld=[key_to_index[k] for k in l]
+    aux=embeddings[ld]
+    t = aux.mean(axis=0)
+    return t;
+
+    faiss
+
+    
