@@ -13,18 +13,17 @@ from tqdm import tqdm
 
 def load_data(file_path):
     transactions = []
-    classes = []
-
     with open(file_path, mode='rt', encoding='UTF-8') as file:
         next(file)
         for line in file:
+            # i+=1
+            # if i==10:
+            #     break
             parts = line.strip().split(';')
-            class_ = parts[0]
-            events = parts[1].split()
+            events = parts[2].split()
             transactions.append(events)
-            classes.append(class_)
 
-    return transactions, classes
+    return transactions
 
 def train_word2vec_model(sentences, vector_size, window, epochs):
     start_time = time.time()
@@ -45,7 +44,7 @@ def calculate_normalized_centroids(model, labelled_transactions):
         if word_vectors.size > 0:
             mean_vector = np.mean(word_vectors, axis=0)
             centroids[i] = normalize(mean_vector.reshape(1, -1), norm='l2').reshape(dim,)
-    
+
     end_time = time.time()
     training_time = end_time - start_time
     return centroids, training_time
@@ -53,13 +52,14 @@ def calculate_normalized_centroids(model, labelled_transactions):
 
 
 def w2v(file_path, vector_size, window, epochs):
-    
 
-    transactions, classes= load_data(file_path)
+
+    transactions= load_data(file_path)
 
 
     print("starting training...")
     model_dw, training_time = train_word2vec_model(transactions, vector_size=vector_size, window=window, epochs=epochs)
+
 
     print(f"Model trained in {training_time:.2f} seconds")
 
@@ -68,20 +68,10 @@ def w2v(file_path, vector_size, window, epochs):
     del model_dw
     X = X.astype(np.float32)
 
-    output_file = f"../../../datasets/w2v_transactions/{os.path.basename(file_path)}_{vector_size}_{window}_{epochs}_{training_time+centroide_time}.data"
 
-    with open(output_file, "w", encoding="utf-8") as out:
-        chunk_size=100000
-        buffer = []
-        for i, (cls, text) in enumerate(tqdm(zip(classes, X))):  
-            text_str = " ".join(map(str, text))  
-            buffer.append(f"{cls};{text_str}\n") 
-            
-            if (i + 1) % chunk_size == 0:
-                out.writelines(buffer)
-                buffer = []
-        if buffer:
-            out.writelines(buffer)
+    output_file = f"../../../datasets/w2v_transactions/{os.path.basename(file_path)}_{vector_size}_{window}_{epochs}_{training_time+centroide_time}"
+    np.save(output_file, X)
+
 
 
 
@@ -93,14 +83,14 @@ def w2v(file_path, vector_size, window, epochs):
 def main():
     print("Starting W2V...")
     dataset_folder = "../../../datasets/dataset_db_w2v"
-    
+
     # Define the settings for window, vector size, epochs, and n_clusters
     # window_settings = [5, 10]
     # vector_size_settings = [50, 100, 200, 400]
     # epochs_settings = [5, 10, 20]
     window_settings = [5]
     vector_size_settings = [200]
-    epochs_settings = [10]
+    epochs_settings = [5]
 
     for filename in os.listdir(dataset_folder):
         print(f"Processing file: {filename}")
@@ -109,10 +99,9 @@ def main():
             file_path = os.path.join(dataset_folder, filename)
             for window, vector_size, epochs in settings_combinations:
                 w2v(file_path, vector_size, window, epochs)
-              
-            
+
+
 
 if __name__ == "__main__":
     main()
 
-    
