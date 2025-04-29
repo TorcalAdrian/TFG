@@ -1,6 +1,7 @@
 from scipy import stats
 from bitarray import bitarray
 from collections import defaultdict
+import csv
 
 __author__ = 'Riccardo Guidotti'
 
@@ -98,3 +99,21 @@ def basket_list_to_bitarray(baskets_list, nitems):
             baskets_bitarray[b][item] = 1
 
     return baskets_bitarray
+
+
+def basket_list_to_bitarray_dict(baskets_list, nitems):
+
+    baskets_bitarray = dict()
+    for b in baskets_list:
+        baskets_bitarray[b] = nitems * bitarray('0')
+        for item in baskets_list[b]:
+            baskets_bitarray[b][item] = 1
+    return baskets_bitarray
+
+def basket_list_to_bitarray_dict_b(basket, nitems):
+
+    basket_bitarray = nitems * bitarray('0')
+    for item in basket:
+        basket_bitarray[item] = 1
+    return basket_bitarray
+

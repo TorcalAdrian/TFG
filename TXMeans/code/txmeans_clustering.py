@@ -9,6 +9,7 @@ from algorithms.tkmeans import *
 import csv
 import os
 from scipy.sparse import lil_matrix
+from tqdm import tqdm
 
 
 
@@ -96,14 +97,6 @@ def count_items(PATH_DATASET_TX):
     return total_items
 
 
-def basket_list_to_sparse_matrix(baskets_list, nitems):
-    print("Construyendo matriz dispersa...")
-    matrix = lil_matrix((len(baskets_list), nitems), dtype=bool)
-    for i, basket in enumerate(baskets_list):
-        matrix.rows[i] = list(basket)
-        matrix.data[i] = [True] * len(basket)
-    print("Conversión a CSR...")
-    return matrix.tocsr()
 
 def run_txmeans_clustering(filename):
 
@@ -129,9 +122,8 @@ def run_txmeans_clustering(filename):
 
     baskets_list = {i: basket for i, basket in enumerate(baskets_list)}
     del map_item_newitem
-    # print("Total de items: ", nitems)
-    baskets_list = basket_list_to_bitarray(baskets_list, len(map_newitem_item))# se jode la memoria aqui
-
+    print("Total de items: ", nitems)
+    # baskets_list = basket_list_to_bitarray(baskets_list, len(map_newitem_item))# se jode la memoria aqui
     nbaskets = len(baskets_list)
     print(nbaskets)
     print(nitems)
@@ -139,12 +131,13 @@ def run_txmeans_clustering(filename):
     start_time = datetime.datetime.now()
     nsample = sample_size(nbaskets, 0.05, conf_level=0.99, prob=0.5)
     txmeans.fit(baskets_list, nbaskets, nitems, random_sample=nsample)
-
+    print("fin clusterizar")
 
     res = txmeans.clustering
     pred_labels = [0] * len(real_labels)
     baskets_clusters = list()
-    for cluster, label in zip(res, range(0, len(res))):
+    print(len(res))
+    for cluster, label in tqdm(zip(res, range(0, len(res)))):
         cluster_list = basket_bitarray_to_list(cluster['cluster']).values()
         for bid in cluster['cluster']:
             pred_labels[bid] = label
@@ -168,7 +161,7 @@ def run_txmeans_clustering(filename):
         if not file_exists:
             writer.writerow(['filename', 'nmi', 'deltak', 'running_time'])
 
-        writer.writerow([filename, nmi, deltak,"", running_time_seconds])
+        writer.writerow([filename, nmi, deltak,len(res), running_time_seconds])
 
     print(f"Datos guardados en {output_csv}")
 

@@ -62,6 +62,7 @@ def rep(baskets, item_baskets, freq, nbaskets, nitems, min_item_freq=2):
         m[e] = 1
         nbr |= item_baskets[e]
         len_m += 1
+    
 
     fun_val1 = fun(baskets, m)
 
@@ -629,7 +630,6 @@ class TXmeans:
 
         # For reproducibility
         random.seed(random_state)
-
         if self.verbose:
             print(datetime.datetime.now(), 'initialization')
         self._first_iter(baskets)
@@ -644,10 +644,11 @@ class TXmeans:
 
         if self.merge_clusters:
             self._merge_clusters()
-
+        # self.clustering = basket_bitarray_to_list_dict(self.clustering)
+        print("assign")
         if self.nbaskets > self.random_sample:
             self._assign_baskets_to_centroids(baskets)
-
+        print("find")
         self._find_medioids()
 
         return self
@@ -661,6 +662,7 @@ class TXmeans:
             for b in sample_baskets_keys:
                 sample_baskets[b] = baskets[b]
             baskets = sample_baskets
+            baskets = basket_list_to_bitarray_dict(baskets, self.nitems)
             if self.verbose:
                 print(datetime.datetime.now(), 'calculate item baskets')
             item_baskets = calculate_item_baskets(baskets, self.nbaskets)
@@ -709,7 +711,6 @@ class TXmeans:
                 baskets, item_baskets, freq, self.nbaskets, self.nitems, self.min_item_freq)
 
         if self.force_first_split:
-
             dist_from_rep = None
             if self.num_init_dist > 0:
                 dist_from_rep = dict()
@@ -988,17 +989,18 @@ class TXmeans:
 
         if self.verbose:
             print(datetime.datetime.now(), 'assign baskets to centroids')
-
         for b in baskets:
             min_dist = float('infinity')
             best_cluster = None
             for i, cluster in enumerate(self.clustering):
                 centroid = cluster['centroid']
-                dist = calculate_distance(baskets[b], centroid, None, None, False)
+                basket_b = basket_list_to_bitarray_dict_b(baskets[b], self.nitems)
+                dist = calculate_distance(basket_b, centroid, None, None, False)
                 if dist < min_dist:
                     best_cluster = i
                     min_dist = dist
             self.clustering[best_cluster]['cluster'][b] = baskets[b]
+
 
     def _find_medioids(self):
         res = self.clustering
@@ -1006,7 +1008,8 @@ class TXmeans:
             d = np.infty
             idx_med = 0
             for bid, bitarr in cluster['cluster'].items():
-                d_tmp = jaccard_bitarray(bitarr, cluster['centroid'])
+                basket_b = basket_list_to_bitarray_dict_b(bitarr, self.nitems)
+                d_tmp = jaccard_bitarray(basket_b, cluster['centroid'])
                 if d_tmp < d:
                     d = d_tmp
                     idx_med = bid
