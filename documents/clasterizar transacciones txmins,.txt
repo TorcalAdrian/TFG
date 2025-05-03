@@ -73,3 +73,17 @@ def getMeanVectorLine(l,embeddings,key_to_index):
     faiss
 
     
+
+20 txmeans de todos datasets. nmi clusters running
+usar el numero de cluster que saque el tx para w2v y comparar
+
+
+w2v-> 200, 5, 5
+
+5 datasets clasicos, sinteticos, dbpedia
+(clusters -> 4, 8, 16) X 20
+
+kelbow en todos w2v-> apuntar clusters, 4-1000
+
+
+txmeans meterle X4 , X40, y todas sample dbpedia

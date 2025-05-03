@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
 from gensim.models import Word2Vec
-from sklearn.cluster import KMeans
-from sklearn.metrics import normalized_mutual_info_score
 from sklearn.preprocessing import normalize
 import datetime
 from tabulate import tabulate
@@ -10,6 +8,7 @@ import os
 import time
 from itertools import product
 from tqdm import tqdm
+from cusim import CuW2V
 
 def load_data(file_path):
     transactions = []
@@ -31,6 +30,16 @@ def train_word2vec_model(sentences, vector_size, window, epochs):
     end_time = time.time()
     training_time = end_time - start_time
     return model, training_time
+
+
+def train_word2vec_model_(sentences, vector_size, window, epochs):
+    start_time = time.time()
+    model = Word2Vec(sentences=sentences, vector_size=vector_size, window=window, min_count=1, workers=4, sg=1, epochs=epochs)
+    end_time = time.time()
+    training_time = end_time - start_time
+    return model, training_time
+
+
 
 
 def calculate_normalized_centroids(model, labelled_transactions):
@@ -58,19 +67,19 @@ def w2v(file_path, vector_size, window, epochs):
 
 
     print("starting training...")
-    model_dw, training_time = train_word2vec_model(transactions, vector_size=vector_size, window=window, epochs=epochs)
+    model_dw, training_time = train_word2vec_model_(transactions, vector_size=vector_size, window=window, epochs=epochs)
 
 
     print(f"Model trained in {training_time:.2f} seconds")
 
-    X, centroide_time=calculate_normalized_centroids(model_dw, transactions)
-    del transactions
-    del model_dw
-    X = X.astype(np.float32)
+    # X, centroide_time=calculate_normalized_centroids(model_dw, transactions)
+    # del transactions
+    # del model_dw
+    # X = X.astype(np.float32)
 
 
-    output_file = f"../../../datasets/w2v_transactions/{os.path.basename(file_path)}_{vector_size}_{window}_{epochs}_{training_time+centroide_time}"
-    np.save(output_file, X)
+    # output_file = f"../../../datasets/w2v_transactions/{os.path.basename(file_path)}_{vector_size}_{window}_{epochs}_{training_time+centroide_time}"
+    # np.save(output_file, X)
 
 
 

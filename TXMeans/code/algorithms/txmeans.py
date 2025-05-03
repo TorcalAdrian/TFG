@@ -645,10 +645,8 @@ class TXmeans:
         if self.merge_clusters:
             self._merge_clusters()
         # self.clustering = basket_bitarray_to_list_dict(self.clustering)
-        print("assign")
         if self.nbaskets > self.random_sample:
             self._assign_baskets_to_centroids(baskets)
-        print("find")
         self._find_medioids()
 
         return self

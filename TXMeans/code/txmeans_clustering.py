@@ -99,59 +99,14 @@ def count_items(PATH_DATASET_TX):
 
 
 def run_txmeans_clustering(filename):
-
-    txmeans = TXmeans()
-    nitems = count_items(filename)
-
-    class_index = 1
-    skipcolumnsindex = set({0})
-        
-    baskets_real_labels, maps = read_uci_data(filename, class_index=class_index,delimiter=";", skipcolumnsindex=skipcolumnsindex)
-    del maps
-    print("Datos cargados")
-
-    baskets_list = list()
-    real_labels = list()
-    count = 0
-    for basket, label in baskets_real_labels:
-        baskets_list.append(basket)
-        real_labels.append(label)
-        count += 1
-    print("Total de transacciones: ", count)
-    baskets_list, map_newitem_item, map_item_newitem = remap_items(baskets_list)
-
-    baskets_list = {i: basket for i, basket in enumerate(baskets_list)}
-    del map_item_newitem
-    print("Total de items: ", nitems)
-    # baskets_list = basket_list_to_bitarray(baskets_list, len(map_newitem_item))# se jode la memoria aqui
-    nbaskets = len(baskets_list)
-    print(nbaskets)
-    print(nitems)
-    print("comenzando a clusterizar")
-    start_time = datetime.datetime.now()
-    nsample = sample_size(nbaskets, 0.05, conf_level=0.99, prob=0.5)
-    txmeans.fit(baskets_list, nbaskets, nitems, random_sample=nsample)
-    print("fin clusterizar")
-
-    res = txmeans.clustering
-    pred_labels = [0] * len(real_labels)
-    baskets_clusters = list()
-    print(len(res))
-    for cluster, label in tqdm(zip(res, range(0, len(res)))):
-        cluster_list = basket_bitarray_to_list(cluster['cluster']).values()
-        for bid in cluster['cluster']:
-            pred_labels[bid] = label
-            baskets_clusters.append(cluster_list)
-
-    end_time = datetime.datetime.now()
-    running_time = end_time - start_time
-    print("fin de clusterizar")
-    nmi = normalized_mutual_info_score(real_labels, pred_labels)
-    deltak = delta_k(real_labels, pred_labels)
-    # purity_score = purity(real_labels, pred_labels)
-    running_time_seconds = running_time.total_seconds()
-
-    output_csv = 'resultadosTxmeans.csv'
+    iterations = 20
+    nmi_list = []
+    nclusters_list = []
+    deltak_list = []
+    running_time_list = []
+    basename = os.path.basename(filename)
+    basename = os.path.splitext(basename)[0]
+    output_csv = '../../final_results/txmeans_all_datasets.csv'
 
     file_exists = os.path.isfile(output_csv)
 
@@ -159,11 +114,66 @@ def run_txmeans_clustering(filename):
         writer = csv.writer(file)
 
         if not file_exists:
-            writer.writerow(['filename', 'nmi', 'deltak', 'running_time'])
+            writer.writerow(['filename', 'nmi', 'deltak','nclusters', 'running_time', 'iteration'])
+        for i in range(iterations):
+            print(f"Ejecutando iteración {i + 1} de {iterations}")
+            txmeans = TXmeans()
+            nitems = count_items(filename)
 
-        writer.writerow([filename, nmi, deltak,len(res), running_time_seconds])
+            class_index = 1
+            skipcolumnsindex = set({0})
+                
+            baskets_real_labels, maps = read_uci_data(filename, class_index=class_index,delimiter=";", skipcolumnsindex=skipcolumnsindex)
+            del maps
 
-    print(f"Datos guardados en {output_csv}")
+            baskets_list = list()
+            real_labels = list()
+            count = 0
+            for basket, label in baskets_real_labels:
+                baskets_list.append(basket)
+                real_labels.append(label)
+                count += 1
+            baskets_list, map_newitem_item, map_item_newitem = remap_items(baskets_list)
+
+            baskets_list = {i: basket for i, basket in enumerate(baskets_list)}
+            del map_item_newitem
+            # baskets_list = basket_list_to_bitarray(baskets_list, len(map_newitem_item))
+            nbaskets = len(baskets_list)
+            start_time = datetime.datetime.now()
+            nsample = sample_size(nbaskets, 0.05, conf_level=0.99, prob=0.5)
+            txmeans.fit(baskets_list, nbaskets, nitems, random_sample=nsample)
+            end_time = datetime.datetime.now()
+            res = txmeans.clustering
+            pred_labels = [0] * len(real_labels)
+            baskets_clusters = list()
+            for cluster, label in zip(res, range(0, len(res))):
+                cluster_list = basket_bitarray_to_list(cluster['cluster']).values()
+                for bid in cluster['cluster']:
+                    pred_labels[bid] = label
+                    baskets_clusters.append(cluster_list)
+
+        
+            running_time = end_time - start_time
+
+            nmi = normalized_mutual_info_score(real_labels, pred_labels)
+            deltak = delta_k(real_labels, pred_labels)
+            # purity_score = purity(real_labels, pred_labels)
+            running_time_seconds = running_time.total_seconds()
+            nmi_list.append(nmi)
+            nclusters_list.append(len(res))
+            deltak_list.append(deltak)
+            running_time_list.append(running_time_seconds)
+            writer.writerow([basename, nmi, deltak, len(res), running_time_seconds,i+1])
+
+        avg_nmi = sum(nmi_list) / iterations
+        avg_nclusters = sum(nclusters_list) / iterations
+        avg_deltak = sum(deltak_list) / iterations
+        avg_running_time = sum(running_time_list) / iterations
+        writer.writerow([basename, avg_nmi, avg_deltak, avg_nclusters, avg_running_time, 'avg'])
+    
+
+
+
 
     
     
