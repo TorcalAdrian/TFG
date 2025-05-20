@@ -99,7 +99,7 @@ def count_items(PATH_DATASET_TX):
 
 
 def run_txmeans_clustering(filename):
-    iterations = 20
+    iterations = 10
     nmi_list = []
     nclusters_list = []
     deltak_list = []
@@ -141,6 +141,8 @@ def run_txmeans_clustering(filename):
             nbaskets = len(baskets_list)
             start_time = datetime.datetime.now()
             nsample = sample_size(nbaskets, 0.05, conf_level=0.99, prob=0.5)
+            nsample=nsample*2
+            basename = f"{basename}_X2"
             txmeans.fit(baskets_list, nbaskets, nitems, random_sample=nsample)
             end_time = datetime.datetime.now()
             res = txmeans.clustering

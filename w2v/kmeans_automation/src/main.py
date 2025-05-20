@@ -1,10 +1,10 @@
 import os
 from itertools import product
 from kmeans_clustering import run_kmeans_clustering
-from w2v import w2v
+# from w2v import w2v
 
 def main():
-    dataset_folder = "../../../datasets/final_datasets/"
+    dataset_folder = "../../../datasets/final_datasets copy/"
     
 
 

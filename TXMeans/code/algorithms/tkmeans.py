@@ -1,4 +1,5 @@
 import random
+from tqdm import tqdm
 
 from heapq import *
 
@@ -154,7 +155,7 @@ class TKMeans:
         max_dist = float('infinity')
         best_res = None
         best_iter_count = None
-        for i in range(0, self.niter):
+        for i in (range(0, self.niter)):
 
             clustering_res, distances, iter_count = self._run(baskets)
             tot_dist = 0
@@ -234,8 +235,8 @@ class TKMeans:
             if len(res) > 0:
                 clustering_res.append({
                     'cluster': res,
-                    'centroid': centroids[cluster_centroid[res.keys()[0]]],
-                    'centroid_id': cluster_centroid[res.keys()[0]]
+                    'centroid': centroids[cluster_centroid[list(res.keys())[0]]],
+                    'centroid_id': cluster_centroid[list(res.keys())[0]]
                 })
             else:
                 clustering_res.append({

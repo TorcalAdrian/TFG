@@ -74,16 +74,20 @@ def getMeanVectorLine(l,embeddings,key_to_index):
 
     
 
-20 txmeans de todos datasets. nmi clusters running
+20 txmeans de todos datasets. nmi clusters running done
 usar el numero de cluster que saque el tx para w2v y comparar
 
 
 w2v-> 200, 5, 5
 
 5 datasets clasicos, sinteticos, dbpedia
-(clusters -> 4, 8, 16) X 20
+(clusters -> 4, 8, 16) X 20 done
 
-kelbow en todos w2v-> apuntar clusters, 4-1000
+kelbow en todos w2v-> apuntar clusters, 4-1000 done
 
 
 txmeans meterle X4 , X40, y todas sample dbpedia
+
+
+
+https://github.com/arvkevi/kneed
