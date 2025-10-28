@@ -4,7 +4,7 @@ from kmeans_clustering import run_kmeans_clustering
 # from w2v import w2v
 
 def main():
-    dataset_folder = "../../../datasets/final_datasets copy/"
+    dataset_folder = "../../../datasets/final_datasets/"
     
 
 

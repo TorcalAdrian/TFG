@@ -67,7 +67,7 @@ def run_kmeans_clustering(file_path, vector_size, window, epochs):
     
     basename = os.path.basename(file_path)
     basename = os.path.splitext(basename)[0]
-    output_csv = '../../../final_results/w2v_all_datasets.csv'
+    output_csv = '../../../final_results_1/w2v_all_datasets.csv'
 
 
     file_exists = os.path.isfile(output_csv)
