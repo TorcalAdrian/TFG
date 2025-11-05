@@ -6,7 +6,7 @@ import datetime
 from tabulate import tabulate
 import os
 import time
-from itertools import product
+
 from tqdm import tqdm
 
 
@@ -72,8 +72,9 @@ def w2v(file_path, vector_size, window, epochs):
     X = X.astype(np.float32)
 
 
-    output_file = f"../../../datasets/w2v_transactions/{os.path.basename(file_path)}_{vector_size}_{window}_{epochs}_{training_time}_{centroide_time}.npy"
+    output_file = f"../../../datasets/w2v_temp_files/{os.path.basename(file_path).replace('.data','')}.npy"
     np.save(output_file, X)
+    return training_time, centroide_time, output_file
 
 
 
@@ -83,28 +84,19 @@ def w2v(file_path, vector_size, window, epochs):
 
 
 
-def main():
-    print("Starting W2V...")
-    dataset_folder = "../../../datasets/dataset_db_w2v"
+def get_transactions(filename, dataset_folder, window, vector_size, epochs):
+    training_time = 0
+    centroide_time = 0
+    output_file = ""
 
-    # Define the settings for window, vector size, epochs, and n_clusters
-    # window_settings = [5, 10]
-    # vector_size_settings = [50, 100, 200, 400]
-    # epochs_settings = [5, 10, 20]
-    window_settings = [5]
-    vector_size_settings = [200]
-    epochs_settings = [5]
+    print("Extracting transactions from file:", filename)
+    file_path = os.path.join(dataset_folder, filename)
+    training_time,centroide_time, output_file = w2v(file_path, vector_size, window, epochs)
 
-    for filename in os.listdir(dataset_folder):
-        print(f"Processing file: {filename}")
-        if filename.endswith('.data'):
-            settings_combinations = product(window_settings, vector_size_settings, epochs_settings)
-            file_path = os.path.join(dataset_folder, filename)
-            for window, vector_size, epochs in settings_combinations:
-                w2v(file_path, vector_size, window, epochs)
+
+    return training_time, centroide_time,output_file
 
 
 
-if __name__ == "__main__":
-    main()
+
 
