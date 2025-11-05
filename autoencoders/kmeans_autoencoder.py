@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from tqdm import tqdm
+import faiss
 
 import torch
 import torch.nn as nn
@@ -141,6 +142,35 @@ def encode_latents(model, X, batch_size=512, device='cpu'):
     return np.vstack(latents).astype(np.float32)
 
 # ========== K-Means & evaluación ==========
+
+def run_kmeans_faiss(embeddings, k, niter=20, gpu=True, verbose=False):
+    """
+    Ejecuta K-Means usando FAISS (CPU o GPU).
+    embeddings: np.array (N, D) float32
+    k: número de clusters
+    niter: iteraciones
+    gpu: True para usar GPU si está disponible
+    """
+    assert embeddings.dtype == np.float32, "FAISS requiere float32"
+    N, D = embeddings.shape
+
+    # Crear KMeans FAISS
+    kmeans = faiss.Kmeans(
+        d=D,
+        k=k,
+        niter=niter,
+        verbose=verbose,
+        gpu=gpu
+    )
+
+    # Entrenar
+    kmeans.train(embeddings)
+
+    # Asignar cada punto al cluster más cercano
+    distances, indices = kmeans.index.search(embeddings, 1)
+    y_pred = indices.flatten()
+
+    return y_pred
 def run_kmeans(embeddings, k, n_init=10, random_state=42):
     km = KMeans(n_clusters=k, n_init=n_init, random_state=random_state)
     y = km.fit_predict(embeddings)
@@ -185,7 +215,7 @@ def main(args):
     # 5) Clusterización + NMI para varios k
     for k in args.k_list:
         t1 = time.time()
-        y_pred = run_kmeans(Z, k=k, n_init=args.kmeans_n_init, random_state=42)
+        y_pred = run_kmeans_faiss(Z, k=k, niter=20, gpu=True, verbose=True)
         t_kmeans = time.time() - t1
         nmi = compute_nmi(y_true, y_pred)
         print(f"[k={k}] NMI={nmi:.4f} | t_kmeans={t_kmeans:.2f}s")
